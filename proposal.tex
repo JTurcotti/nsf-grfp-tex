@@ -1,0 +1,55 @@
+\documentclass{nsf-grfp}
+
+\usepackage{lipsum}
+
+\usepackage{hyperref}
+
+\title{Building Friendly Type Systems for Safe Concurrency}
+\author{Joshua Turcotti}
+
+\begin{document}
+
+\maketitle
+
+%\subsection*{Title:} Friendly Type Systems for Safe Concurrency
+
+\subsection*{Motivation:} Pervasive use of concurrency is a requirement for modern data-driven platforms such as social networks, messaging services, and e-commerce to scale to meet demand. Somewhere along the line, there's a proof obligation that the way storage and computation is distributed within these platforms doesn't lead to erroneous behavior like duplicate transactions or security protocol failures. All too often, that burden is placed on the programmer and their ability to write tests. This is flawed approach because the average programmer has not been sufficiently trained to bake reasoning about safe concurrency into their daily work, even those that have been trained are prone to human error, and runtime testing cannot capture the breadth of possible behavior in a concurrent setting. The only way to guarantee correct implementations of concurrency is to provide programmers with a language in which the concurrency primitives can be proven to be safely used at compile time. I aim to focus my research on developing type systems, and other static analysis tools, that satisfy the safe concurrency proof obligation without requiring the programmer to provide the logic to do so themselves, without restricting natural programming patterns, and without any runtime effects. I believe that the coming generations of software infrastructure can only be built on languages that natively include such static reasoning, making their development an exciting and fruitful direction for research.
+
+\subsection*{Background:} There have already been many attempts to design languages in this space, with some of the earliest work I know of including the Vault language developed, and internally deployed, by Microsoft Research in 2002 \cite{vault}. This work set the standard for using \textit{Linear Types} to model sophisticated and flow-sensitive behavior not usually captured by type systems. Linear types have finally made their way into industry through the growing adoption of the Rust programming language, which enforces safe memory management through linear resources \cite{rust}. Later work such as Haller and Odersky's 2010 system \cite{haller odersky} further specialized the idea of linear logic to the problem of safe concurrency by tracking access capabilities that could be consumed and borrowed to safely perform arbitrary computations on and subsequently share data structures. In the early to mid 2010s, many more approaches to the translation of concurrency logic into usable type systems were developed. Pony \cite{pony} is one example that provided a sophisticated hierarchy of capabilities that an object reference could hold, and demonstrated that proper usage of that hierarchy led to safe concurrency through a wide range of natural coding patterns. Work by Marco Servetto including \textit{Ballon Types} \cite{balloon types} has provided a simpler hierarchy of reference capabilities that restrict the shape of object graphs and possible coding patterns only slightly more. Since the vast majority of the most recent languages in this space are restrictive only with respect to data and computation used by the concurrency primitives, the largest hindrance to widespread industry adoption of languages with natively safe concurrency is their annotation burden and intellectual overhead to learn and use. This leaves as an open problem the development of type systems that can still perform robust reasoning about concurrency, but have less impact on the surface-level language.
+\subsection*{Research Plan:} My plan to contribute to the design of new languages for safe concurrency is an iterative process of experimentation and human feedback. As part of a joint effort between UC Berkeley's RISELab and Cornell's Applied Programming Languages group, I've recently completed the formalization and proofs of soundness for a novel ownership type system with \textit{regions} \cite{regions} and a \textit{focus} mechanism \cite{vault}, which will appear in a paper we're submitting to PLDI '22. One significantly under-developed part of this design space is the error messages indicating to a programmer why the type system could not be applied to conclude their code was safe. Existing typecheckers phrase typing errors in terms of the language's own capabilities hierarchy, linear resource system, or restrictive typing rules, which provides little help debugging to any programmer not familiar with that language's internal formalisms. I plan to begin my graduate studies by researching how data races and other failures to correctly complement concurrency can be reported to the programmer without referencing the internal formalisms of the language that detected the failure. If I succeed in tackling and publishing results on the error-reporting problem, I will be in an excellent position to provide other researchers and industry software engineers with a comprehensive set of tooling to experiment with the type system I've developed with Cornell and Berkeley. This will provide context and a platform to develop more sophisticated type systems that improve on both the related work by others and our own work, and ultimately develop a general theory of design principles for safe and usable languages. 
+
+\subsection*{Intellectual Merit:} This work has the potential to advance our understanding of how arbitrary algorithms and data structures can be implemented in the context of a proof obligation for safe concurrency. Since the question of aliasing between arbitrary user-defined variables and object fields is undecidable, most "obvious" implementations of even simple algorithms admit proofs of safe concurrency that reduce to the halting problem. In exploring the problems discussed above of designing type systems capable of constructing these proofs, and intelligently reporting failure to construct proofs, new principles concerning algorithm design and implementation will necessarily be discovered. The most direct contribution of this line of work, however, will be providing the academic and industrial communities with safe and friendly languages for concurrent programming. The only path to adoption of such languages is in-depth development of their type systems to guarantee expressive power, and in-depth development of their surrounding software tooling to guarantee an efficient programming environment. By targeting both avenues in my research, I believe there is great potential to contribute to the state of Programming Languages knowledge.
+
+\subsection*{Broader Impact:} Programming Languages are the tools that build our modern digital infrastructure. Reliability of this digital infrastructure should be taken as seriously as reliability of our physical infrastructure, but largely due to the impractical cost to build it safely, crashes and failures are ubiquitous. Security breaches and unchecked vulnerabilities are far more prevalent than they would be if the usage of a more robust suite of static analysis tools and type systems was accepted. Even without the influence of malicious actors, days before writing this, every service managed by Facebook was taken offline for a day by a preventable bug. Unresponsiveness and data loss are inconvenient in some cases, and endanger life and property in others. Building tools that bring provable safety to the software development process and tackle the big hard problems like safe concurrency both solves these problems in the targeted domain, and demonstrates that they can be solved the remaining domains. By proceeding with this research, I hope to bring the world more reliable digital infrastructure, lowering costs of access to data-driven services that improve quality of life, decreasing the risk of failure of software on which our health and safety depend, and making the profession of Software Engineering more accessible to all.
+
+\begin{thebibliography}{9}
+
+\bibitem{pony}
+Sylvan Clebsch, Sophia Drossopoulou, Sebastian Blessing, and Andy McNeil. 2015. \textit{Deny capabilities for safe, fast actors}.
+In 5 th Int’l Workshop on Programming Based on Actors, Agents, and Decentralized Control (AGERE!). 1–12. https:
+//doi.org/10.1145/2824815.2824816
+
+
+\bibitem{vault}
+Manuel Fähndrich and Robert DeLine. 2002. \textit{Adoption and Focus: Practical Linear Types for Imperative Programming}. In
+ACM SIGPLAN Conf. on Programming Language Design and Implementation (PLDI).
+
+\bibitem{haller odersky}
+Philipp Haller and Martin Odersky. 2010. \textit{Capabilities for uniqueness and borrowing}. In European Conference on Object-
+Oriented Programming. Springer, 354–378.
+
+\bibitem{rust}
+Steve Klabnik and Carol Nichols. 2019. \textit{The Rust Programming Language (Covers Rust 2018)}. No Starch Press.
+
+\bibitem{balloon types}
+Marco Servetto, David J. Pearce, Lindsay Groves, and Alex Potanin. \textit{Balloon types for safe
+parallelisation over arbitrary object graphs}. In WODET 2014 - Workshop on Determinism and
+Correctness in Parallel Programming, 2013.
+
+\bibitem{regions}
+Mads Tofte and Jean-Pierre Talpin. 1997a. \textit{Region-based memory management}. Information and Computation 132, 2 (1997),
+109–176.
+
+\end{thebibliography}
+
+\end{document}
